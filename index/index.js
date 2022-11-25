@@ -34,30 +34,40 @@ function sendMessageToTelegram(chatId, message, lat, lon) {
   });
 }
 
-
-console.log('Loading function');
-
+console.log("Loading function");
 
 exports.handler = async (event) => {
-    //console.log('Received event:', JSON.stringify(event, null, 2));
-    var processWhatsapp; 
-    for (const { messageId, body } of event.Records) {
-        var alerta = JSON.parse(body);
-       if( typeof to != "undefined" && typeof id_Telegram != "undefined" ){
-        if(typeof id_Telegram != "undefined"){
-          sendMessageToWhatsapp(alerta.to, alerta.message, alerta.lat, alerta.lon);
-        }
-        if(typeof to != "undefined"){
-          
-          sendMessageToTelegram(alerta.id_Telegram, alerta.message, alerta.lat, alerta.lon);
-        }
-       }
-       processWhatsapp = sendMessageToWhatsapp(alerta.to, alerta.message, alerta.lat, alerta.lon);
+  //console.log('Received event:', JSON.stringify(event, null, 2));
+  var processWhatsapp;
+  for (const { messageId, body } of event.Records) {
+    var alerta = JSON.parse(body);
+    if (typeof to != "undefined" && typeof id_Telegram != "undefined") {
+      if (typeof id_Telegram != "undefined") {
+        sendMessageToWhatsapp(
+          alerta.to,
+          alerta.message,
+          alerta.lat,
+          alerta.lon
+        );
+      }
+      if (typeof to != "undefined") {
+        sendMessageToTelegram(
+          alerta.id_Telegram,
+          alerta.message,
+          alerta.lat,
+          alerta.lon
+        );
+      }
     }
-    return true;
+    processWhatsapp = sendMessageToWhatsapp(
+      alerta.to,
+      alerta.message,
+      alerta.lat,
+      alerta.lon
+    );
+  }
+  return true;
 };
-
-
 
 // exports.handler = (event) => {
 //  const processTelegram = sendMessageToTelegram(event.id_Telegram, event.message);
