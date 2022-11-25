@@ -20,16 +20,16 @@ function sendMessageToWhatsapp(to, message, lat, lon) {
   });
 }
 
-function sendMessageToTelegram(chatId, message) {
+function sendMessageToTelegram(chatId, message, lat, lon) {
   return rp({
     method: "POST",
     uri: `https://api.telegram.org/bot${process.env.BOT_TOKEN}/sendLocation`,
     form: {
       chat_id: chatId,
       text: message,
-      latitude: 37.7576793,
+      latitude: lat,
       longitude: -122.5076402,
-      parse_mode: "HTML",
+      parse_mode: lon,
     },
   });
 }
@@ -37,14 +37,22 @@ function sendMessageToTelegram(chatId, message) {
 
 console.log('Loading function');
 
+
 exports.handler = async (event) => {
     //console.log('Received event:', JSON.stringify(event, null, 2));
     var processWhatsapp; 
     for (const { messageId, body } of event.Records) {
         var alerta = JSON.parse(body);
-        console.log(alerta.to);
-        console.log(alerta.message);
-        processWhatsapp = sendMessageToWhatsapp(alerta.to, alerta.message, alerta.lat, alerta.lon);
+       if( typeof to != "undefined" && typeof id_Telegram != "undefined" ){
+        if(typeof id_Telegram != "undefined"){
+          sendMessageToWhatsapp(alerta.to, alerta.message, alerta.lat, alerta.lon);
+        }
+        if(typeof to != "undefined"){
+          
+          sendMessageToTelegram(alerta.id_Telegram, alerta.message, alerta.lat, alerta.lon);
+        }
+       }
+       processWhatsapp = sendMessageToWhatsapp(alerta.to, alerta.message, alerta.lat, alerta.lon);
     }
     return true;
 };
